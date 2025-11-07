@@ -4033,6 +4033,21 @@
                 closeGalleryModal();
             }
         });
+
+        // iOS Touch Support - Make entire gallery cards clickable
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            const subtitle = item.querySelector('.gallery-subtitle');
+            const galleryTitle = subtitle ? subtitle.getAttribute('onclick').match(/'([^']+)'/)[1] : '';
+            
+            if (galleryTitle) {
+                item.style.cursor = 'pointer';
+                item.addEventListener('click', function(e) {
+                    if (!e.target.classList.contains('gallery-subtitle')) {
+                        openGalleryModal(galleryTitle);
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
