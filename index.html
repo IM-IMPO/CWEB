@@ -1368,10 +1368,31 @@
             align-items: center;
             justify-content: center;
             z-index: 3;
+            cursor: pointer;
         }
 
         .gallery-item:hover .gallery-overlay {
             opacity: 1;
+        }
+
+        /* iOS/Touch Device Fix - Always show overlay on touch devices */
+        @media (hover: none) and (pointer: coarse) {
+            .gallery-overlay {
+                opacity: 1;
+                background: linear-gradient(to bottom, 
+                    rgba(0, 0, 0, 0.3) 0%, 
+                    rgba(0, 0, 0, 0.85) 100%);
+            }
+            
+            .gallery-icon {
+                transform: scale(1) rotate(0deg);
+            }
+            
+            .gallery-title,
+            .gallery-subtitle {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .gallery-icon {
@@ -1410,11 +1431,30 @@
             transform: translateY(20px);
             opacity: 0;
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+            cursor: pointer;
+            padding: 10px 20px;
+            margin-top: 10px;
+            -webkit-tap-highlight-color: rgba(212, 175, 55, 0.2);
+            touch-action: manipulation;
         }
 
         .gallery-item:hover .gallery-subtitle {
             transform: translateY(0);
             opacity: 1;
+        }
+
+        /* iOS Touch - Make subtitle more tappable */
+        @media (hover: none) and (pointer: coarse) {
+            .gallery-subtitle {
+                background: rgba(212, 175, 55, 0.15);
+                border: 1px solid var(--accent);
+                border-radius: 4px;
+            }
+            
+            .gallery-subtitle:active {
+                background: rgba(212, 175, 55, 0.3);
+                transform: scale(0.95);
+            }
         }
 
         /* Gallery corner borders */
@@ -3078,7 +3118,7 @@
                     <div class="leader-particle"></div>
                 </div>
                 <div class="leader-info">
-                    <h3>Leanna Acido?</h3>
+                    <h3>Leanna Acido</h3>
                     <p class="leader-role">Youth Coordinator</p>
                     <div class="leader-divider"></div>
                     <p class="leader-description">Empowering and inspiring the next generation to live boldly for Christ, building a community of passionate young believers.</p>
@@ -3165,10 +3205,10 @@
                     <div class="gallery-sparkle"></div>
                     <div class="gallery-sparkle"></div>
                 </div>
-                <div class="gallery-overlay">
+                <div class="gallery-overlay" data-gallery="Sunday Worship">
                     <div class="gallery-icon">✝</div>
                     <div class="gallery-title">Sunday Worship</div>
-                    <div class="gallery-subtitle" onclick="openGalleryModal('Sunday Worship')">View Gallery</div>
+                    <div class="gallery-subtitle">View Gallery</div>
                 </div>
             </div>
             <div class="gallery-item">
@@ -3190,10 +3230,10 @@
                     <div class="gallery-sparkle"></div>
                     <div class="gallery-sparkle"></div>
                 </div>
-                <div class="gallery-overlay">
+                <div class="gallery-overlay" data-gallery="Youth Ministry">
                     <div class="gallery-icon">🎵</div>
                     <div class="gallery-title">Youth Ministry</div>
-                    <div class="gallery-subtitle" onclick="openGalleryModal('Youth Ministry')">View Gallery</div>
+                    <div class="gallery-subtitle">View Gallery</div>
                 </div>
             </div>
             <div class="gallery-item">
@@ -3215,10 +3255,10 @@
                     <div class="gallery-sparkle"></div>
                     <div class="gallery-sparkle"></div>
                 </div>
-                <div class="gallery-overlay">
+                <div class="gallery-overlay" data-gallery="Fellowship">
                     <div class="gallery-icon">❤️</div>
                     <div class="gallery-title">Fellowship</div>
-                    <div class="gallery-subtitle" onclick="openGalleryModal('Fellowship')">View Gallery</div>
+                    <div class="gallery-subtitle">View Gallery</div>
                 </div>
             </div>
             <div class="gallery-item">
@@ -3240,10 +3280,10 @@
                     <div class="gallery-sparkle"></div>
                     <div class="gallery-sparkle"></div>
                 </div>
-                <div class="gallery-overlay">
+                <div class="gallery-overlay" data-gallery="Prayer Meeting">
                     <div class="gallery-icon">🙌</div>
                     <div class="gallery-title">Prayer Meeting</div>
-                    <div class="gallery-subtitle" onclick="openGalleryModal('Prayer Meeting')">View Gallery</div>
+                    <div class="gallery-subtitle">View Gallery</div>
                 </div>
             </div>
             <div class="gallery-item">
@@ -3265,10 +3305,10 @@
                     <div class="gallery-sparkle"></div>
                     <div class="gallery-sparkle"></div>
                 </div>
-                <div class="gallery-overlay">
+                <div class="gallery-overlay" data-gallery="Children's Church">
                     <div class="gallery-icon">✨</div>
                     <div class="gallery-title">Children's Church</div>
-                    <div class="gallery-subtitle" onclick="openGalleryModal('Children\'s Church')">View Gallery</div>
+                    <div class="gallery-subtitle">View Gallery</div>
                 </div>
             </div>
             <div class="gallery-item">
@@ -3290,10 +3330,10 @@
                     <div class="gallery-sparkle"></div>
                     <div class="gallery-sparkle"></div>
                 </div>
-                <div class="gallery-overlay">
+                <div class="gallery-overlay" data-gallery="Special Events">
                     <div class="gallery-icon">🌟</div>
                     <div class="gallery-title">Special Events</div>
-                    <div class="gallery-subtitle" onclick="openGalleryModal('Special Events')">View Gallery</div>
+                    <div class="gallery-subtitle">View Gallery</div>
                 </div>
             </div>
         </div>
@@ -3304,7 +3344,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="modalTitle">Gallery</h3>
-                <button class="modal-close" onclick="closeGalleryModal()">✕</button>
+                <button class="modal-close" id="modalCloseBtn">✕</button>
             </div>
             <div class="modal-gallery-grid" id="modalGalleryGrid">
                 <!-- Photos will be inserted here dynamically -->
@@ -3314,14 +3354,14 @@
 
     <!-- Fullscreen Image Viewer -->
     <div class="fullscreen-viewer" id="fullscreenViewer">
-        <button class="fullscreen-close" onclick="closeFullscreen()">✕</button>
-        <button class="fullscreen-nav fullscreen-prev" onclick="navigateImage(-1)">‹</button>
+        <button class="fullscreen-close" id="fullscreenCloseBtn">✕</button>
+        <button class="fullscreen-nav fullscreen-prev" id="fullscreenPrevBtn">‹</button>
         <img class="fullscreen-image" id="fullscreenImage" src="" alt="Full view">
         <video class="fullscreen-image" id="fullscreenVideo" controls style="display: none;">
             <source src="" type="video/mp4">
             Your browser does not support the video tag.
         </video>
-        <button class="fullscreen-nav fullscreen-next" onclick="navigateImage(1)">›</button>
+        <button class="fullscreen-nav fullscreen-next" id="fullscreenNextBtn">›</button>
     </div>
 
     <!-- Contact Section -->
@@ -4033,9 +4073,66 @@
                 closeGalleryModal();
             }
         });
+
+        // iOS/Touch Device Gallery Click Handlers
+        // Make entire gallery overlay clickable with proper touch support
+        document.querySelectorAll('.gallery-overlay').forEach(overlay => {
+            const galleryName = overlay.getAttribute('data-gallery');
+            
+            // Function to handle opening gallery
+            function handleOpenGallery(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (galleryName) {
+                    openGalleryModal(galleryName);
+                }
+            }
+            
+            // Add both click and touch events for iOS compatibility
+            overlay.addEventListener('click', handleOpenGallery);
+            overlay.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                handleOpenGallery(e);
+            });
+        });
+
+        // Add event listeners for modal close button
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        if (modalCloseBtn) {
+            modalCloseBtn.addEventListener('click', closeGalleryModal);
+            modalCloseBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                closeGalleryModal();
+            });
+        }
+
+        // Add event listeners for fullscreen buttons
+        const fullscreenCloseBtn = document.getElementById('fullscreenCloseBtn');
+        if (fullscreenCloseBtn) {
+            fullscreenCloseBtn.addEventListener('click', closeFullscreen);
+            fullscreenCloseBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                closeFullscreen();
+            });
+        }
+
+        const fullscreenPrevBtn = document.getElementById('fullscreenPrevBtn');
+        if (fullscreenPrevBtn) {
+            fullscreenPrevBtn.addEventListener('click', () => navigateImage(-1));
+            fullscreenPrevBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                navigateImage(-1);
+            });
+        }
+
+        const fullscreenNextBtn = document.getElementById('fullscreenNextBtn');
+        if (fullscreenNextBtn) {
+            fullscreenNextBtn.addEventListener('click', () => navigateImage(1));
+            fullscreenNextBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                navigateImage(1);
+            });
+        }
     </script>
 </body>
 </html>
-
-
-
