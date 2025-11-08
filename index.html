@@ -2422,6 +2422,7 @@
             border: 2px solid rgba(37, 99, 235, 0.2);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
         }
 
         [data-theme="dark"] .contact-map {
@@ -2457,17 +2458,20 @@
             );
         }
 
-        .contact-map:hover {
+        .contact-map:hover,
+        .contact-map.active {
             border-color: var(--accent);
             box-shadow: 0 20px 60px rgba(37, 99, 235, 0.3);
             transform: translateY(-5px);
         }
 
-        [data-theme="dark"] .contact-map:hover {
+        [data-theme="dark"] .contact-map:hover,
+        [data-theme="dark"] .contact-map.active {
             box-shadow: 0 20px 60px rgba(212, 175, 55, 0.4);
         }
 
-        .contact-map:hover::before {
+        .contact-map:hover::before,
+        .contact-map.active::before {
             opacity: 1;
             animation: map-shine 2s ease infinite;
         }
@@ -2495,7 +2499,8 @@
             transition: all 0.5s ease;
         }
 
-        .contact-map:hover .map-iframe {
+        .contact-map:hover .map-iframe,
+        .contact-map.active .map-iframe {
             filter: grayscale(0%) brightness(1);
         }
 
@@ -2519,7 +2524,8 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
-        .contact-map:hover .map-overlay {
+        .contact-map:hover .map-overlay,
+        .contact-map.active .map-overlay {
             transform: translateY(0);
         }
 
@@ -2576,7 +2582,8 @@
             transform: translate(-50%, -50%) rotate(45deg);
         }
 
-        .contact-map:hover .map-marker {
+        .contact-map:hover .map-marker,
+        .contact-map.active .map-marker {
             opacity: 1;
         }
 
@@ -2605,7 +2612,8 @@
             animation: pulse-ring 2s ease-out infinite;
         }
 
-        .contact-map:hover .map-pulse {
+        .contact-map:hover .map-pulse,
+        .contact-map.active .map-pulse {
             opacity: 1;
         }
 
@@ -2659,26 +2667,31 @@
             border-top: none;
         }
 
-        .contact-map:hover .map-corner {
+        .contact-map:hover .map-corner,
+        .contact-map.active .map-corner {
             opacity: 1;
         }
 
-        .contact-map:hover .map-corner-tl {
+        .contact-map:hover .map-corner-tl,
+        .contact-map.active .map-corner-tl {
             top: 10px;
             left: 10px;
         }
 
-        .contact-map:hover .map-corner-tr {
+        .contact-map:hover .map-corner-tr,
+        .contact-map.active .map-corner-tr {
             top: 10px;
             right: 10px;
         }
 
-        .contact-map:hover .map-corner-bl {
+        .contact-map:hover .map-corner-bl,
+        .contact-map.active .map-corner-bl {
             bottom: 10px;
             left: 10px;
         }
 
-        .contact-map:hover .map-corner-br {
+        .contact-map:hover .map-corner-br,
+        .contact-map.active .map-corner-br {
             bottom: 10px;
             right: 10px;
         }
@@ -2972,6 +2985,16 @@
             .gallery-grid {
                 grid-template-columns: 1fr;
                 gap: 4rem 1rem;
+            }
+            
+            .contact-map {
+                height: 350px;
+            }
+            
+            .map-overlay {
+                position: static;
+                transform: translateY(0) !important;
+                margin-bottom: 1rem;
             }
         }
     </style>
@@ -3639,6 +3662,23 @@
             item.addEventListener('touchend', toggleGallery);
         });
 
+        // iOS Fix: Map Click/Tap Handling
+        const contactMap = document.querySelector('.contact-map');
+        if (contactMap) {
+            const toggleMap = (e) => {
+                // Prevent default to avoid iOS delays
+                if (e.type === 'touchend') {
+                    e.preventDefault();
+                }
+                
+                // Toggle active state to show overlay
+                contactMap.classList.toggle('active');
+            };
+            
+            contactMap.addEventListener('click', toggleMap);
+            contactMap.addEventListener('touchend', toggleMap);
+        }
+
         // Close active states when clicking outside
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.leader-card')) {
@@ -3646,6 +3686,9 @@
             }
             if (!e.target.closest('.gallery-item')) {
                 galleryItems.forEach(item => item.classList.remove('active'));
+            }
+            if (!e.target.closest('.contact-map')) {
+                if (contactMap) contactMap.classList.remove('active');
             }
         });
 
