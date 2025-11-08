@@ -2497,11 +2497,13 @@
             border: none;
             filter: grayscale(20%) brightness(0.95);
             transition: all 0.5s ease;
+            pointer-events: none;
         }
 
         .contact-map:hover .map-iframe,
         .contact-map.active .map-iframe {
             filter: grayscale(0%) brightness(1);
+            pointer-events: auto;
         }
 
         .map-overlay {
