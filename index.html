@@ -3469,7 +3469,7 @@
                     <div class="map-container">
                         <iframe
                             class="map-iframe"
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3848.1234567890123!2d120.5820691!3d15.61931!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396cb53ed092a03%3A0x94a1733790351496!2sApsayan%20Christian%20and%20Missionary%20Alliance%20Church!5e1!3m2!1sen!2sph!4v1234567890123!5m2!1sen!2sph&zoom=17"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3848.1234567890123!2d120.5820691!3d15.61931!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3396cb53ed092a03%3A0x94a1733790351496!2sApsayan%20Christian%20and%20Missionary%20Alliance%20Church!5e0!3m2!1sen!2sph!4v1234567890123!5m2!1sen!2sph&zoom=17"
                             loading="lazy"
                             referrerpolicy="no-referrer-when-downgrade"
                             allowfullscreen>
@@ -3668,6 +3668,11 @@
         const contactMap = document.querySelector('.contact-map');
         if (contactMap) {
             const toggleMap = (e) => {
+                // Only toggle if clicking on the map container, not the iframe
+                if (e.target.closest('.map-iframe')) {
+                    return;
+                }
+                
                 // Prevent default to avoid iOS delays
                 if (e.type === 'touchend') {
                     e.preventDefault();
